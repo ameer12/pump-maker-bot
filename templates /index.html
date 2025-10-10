@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pump Maker Bot</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1>Pump Maker Bot</h1>
+  <form action="/trade" method="post">
+    <label>Wallet:</label>
+    <input type="text" name="wallet" value="wallet1" required><br>
+
+    <label>Amount ($):</label>
+    <input type="number" name="amount" value="10" step="0.01" required><br>
+
+    <label>Delay (seconds):</label>
+    <input type="number" name="delay" value="2" step="0.1" required><br>
+
+    <label>Number of Executions:</label>
+    <input type="number" name="count" value="5" required><br>
+
+    <label>Dry Run:</label>
+    <input type="checkbox" name="dry_run"><br>
+
+    <button type="submit">Execute Trade</button>
+  </form>
+</body>
+</html>
