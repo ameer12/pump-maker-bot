@@ -1,0 +1,6 @@
+{
+  "default_wallet": "wallet1",
+  "default_amount": 10,
+  "default_delay": 2,
+  "default_count": 5
+}
