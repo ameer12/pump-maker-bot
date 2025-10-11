@@ -2,7 +2,14 @@ import time
 import random
 import json
 
-def execute_trade(wallet, amount, delay, count, dry_run=False, action="buy"):
+def get_current_price():
+    # دالة وهمية لإرجاع سعر السوق الحالي
+    # يمكنك لاحقًا ربطها بـ Web3 أو API خارجي
+    return random.uniform(0.5, 2.0)
+
+def execute_trade(wallet, amount, delay, count, dry_run=False, action="buy",
+                  continuous=False, preview=False, spacing=0,
+                  limit_price=0, min_price=0, max_price=999999):
     try:
         with open('wallets.json') as f:
             wallets = json.load(f)
@@ -12,21 +19,30 @@ def execute_trade(wallet, amount, delay, count, dry_run=False, action="buy"):
     if wallet not in wallets:
         return f"Wallet '{wallet}' not found."
 
-    for i in range(count):
+    if preview:
+        return f"Preview: {count if not continuous else '∞'} {action} operations from wallet '{wallet}' with ${amount}, delay {delay}s, spacing {spacing}s, limit ${limit_price}, price range [{min_price}–{max_price}]"
+
+    executions = 0
+    while True:
+        if not continuous and executions >= count:
+            break
+
+        current_price = get_current_price()
+        if not (min_price <= current_price <= max_price):
+            print(f"[SKIPPED] {action.upper()} due to price {current_price:.2f} outside range [{min_price}–{max_price}]")
+            time.sleep(delay)
+            continue
+
         jitter = random.uniform(-0.5, 0.5)
         actual_delay = max(0, delay + jitter)
 
         if dry_run:
-            print(f"[DRY RUN] {action.upper()} #{i+1} from {wallet} with ${amount}")
+            print(f"[DRY RUN] {action.upper()} #{executions+1} from {wallet} with ${amount} at price ${limit_price or current_price:.2f}")
         else:
-            print(f"{action.upper()} #{i+1} from {wallet} with ${amount}")
+            print(f"{action.upper()} #{executions+1} from {wallet} with ${amount} at price ${limit_price or current_price:.2f}")
             # هنا ممكن تضيف تنفيذ فعلي باستخدام Web3 أو Solana API
-            # مثلاً:
-            # if action == "buy":
-            #     execute_buy(wallet, amount)
-            # elif action == "sell":
-            #     execute_sell(wallet, amount)
 
-        time.sleep(actual_delay)
+        executions += 1
+        time.sleep(actual_delay + spacing)
 
-    return f"Executed {count} {action} operations from wallet '{wallet}'{' (dry-run)' if dry_run else ''}."
+    return f"Executed {executions} {action} operations from wallet '{wallet}'{' (dry-run)' if dry_run else ''}."
