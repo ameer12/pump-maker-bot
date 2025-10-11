@@ -22,8 +22,26 @@
     <label>Number of Executions:</label>
     <input type="number" name="count" value="5" required><br>
 
+    <label>Limit Price ($):</label>
+    <input type="number" name="limit_price" step="0.01"><br>
+
+    <label>Min Price ($):</label>
+    <input type="number" name="min_price" step="0.01"><br>
+
+    <label>Max Price ($):</label>
+    <input type="number" name="max_price" step="0.01"><br>
+
+    <label>Spacing Interval (seconds):</label>
+    <input type="number" name="spacing" value="0" step="0.1"><br>
+
     <label>Dry Run:</label>
     <input type="checkbox" name="dry_run"><br>
+
+    <label>Continuous Mode:</label>
+    <input type="checkbox" name="continuous_mode"><br>
+
+    <label>Preview Only:</label>
+    <input type="checkbox" name="preview"><br>
 
     <button type="submit">Execute Buy</button>
   </form>
@@ -45,10 +63,52 @@
     <label>Number of Executions:</label>
     <input type="number" name="count" value="5" required><br>
 
+    <label>Limit Price ($):</label>
+    <input type="number" name="limit_price" step="0.01"><br>
+
+    <label>Min Price ($):</label>
+    <input type="number" name="min_price" step="0.01"><br>
+
+    <label>Max Price ($):</label>
+    <input type="number" name="max_price" step="0.01"><br>
+
+    <label>Spacing Interval (seconds):</label>
+    <input type="number" name="spacing" value="0" step="0.1"><br>
+
     <label>Dry Run:</label>
     <input type="checkbox" name="dry_run"><br>
 
+    <label>Continuous Mode:</label>
+    <input type="checkbox" name="continuous_mode"><br>
+
+    <label>Preview Only:</label>
+    <input type="checkbox" name="preview"><br>
+
     <button type="submit">Execute Sell</button>
+  </form>
+
+  <hr>
+
+  <!-- Wallet Management -->
+  <h2>Wallet Management</h2>
+  <form action="/deposit" method="post">
+    <label>Wallet:</label>
+    <input type="text" name="wallet" value="wallet1" required><br>
+    <label>Amount ($):</label>
+    <input type="number" name="amount" value="10" step="0.01" required><br>
+    <button type="submit">Deposit</button>
+  </form>
+
+  <form action="/withdraw" method="post">
+    <label>Wallet:</label>
+    <input type="text" name="wallet" value="wallet1" required><br>
+    <label>Amount ($):</label>
+    <input type="number" name="amount" value="10" step="0.01" required><br>
+    <button type="submit">Withdraw</button>
+  </form>
+
+  <form action="/rebalance" method="post">
+    <button type="submit">Rebalance Wallets</button>
   </form>
 </body>
   </html>
