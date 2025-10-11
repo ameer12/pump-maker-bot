@@ -15,7 +15,18 @@ def trade():
     count = int(request.form['count'])
     dry_run = 'dry_run' in request.form
 
-    result = execute_trade(wallet, amount, delay, count, dry_run)
+    result = execute_trade(wallet, amount, delay, count, dry_run, action="buy")
+    return f"<h2>{result}</h2><a href='/'>Back</a>"
+
+@app.route('/sell', methods=['POST'])
+def sell():
+    wallet = request.form['wallet']
+    amount = float(request.form['amount'])
+    delay = float(request.form['delay'])
+    count = int(request.form['count'])
+    dry_run = 'dry_run' in request.form
+
+    result = execute_trade(wallet, amount, delay, count, dry_run, action="sell")
     return f"<h2>{result}</h2><a href='/'>Back</a>"
 
 if __name__ == '__main__':
