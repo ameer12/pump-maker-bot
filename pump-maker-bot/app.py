@@ -20,6 +20,9 @@ def trade():
     limit_price = float(request.form.get('limit_price', 0))
     min_price = float(request.form.get('min_price', 0))
     max_price = float(request.form.get('max_price', 999999))
+    profit_target = float(request.form.get('profit_target', 1.5))
+    volume_threshold = int(request.form.get('volume_threshold', 20))
+    rotate_wallets = 'rotate_wallets' in request.form
 
     result = execute_trade(
         wallet=wallet,
@@ -33,7 +36,10 @@ def trade():
         spacing=spacing,
         limit_price=limit_price,
         min_price=min_price,
-        max_price=max_price
+        max_price=max_price,
+        profit_target=profit_target,
+        volume_threshold=volume_threshold,
+        rotate_wallets=rotate_wallets
     )
     return f"<h2>{result}</h2><a href='/'>Back</a>"
 
@@ -50,6 +56,9 @@ def sell():
     limit_price = float(request.form.get('limit_price', 0))
     min_price = float(request.form.get('min_price', 0))
     max_price = float(request.form.get('max_price', 999999))
+    profit_target = float(request.form.get('profit_target', 1.5))
+    volume_threshold = int(request.form.get('volume_threshold', 20))
+    rotate_wallets = 'rotate_wallets' in request.form
 
     result = execute_trade(
         wallet=wallet,
@@ -63,7 +72,10 @@ def sell():
         spacing=spacing,
         limit_price=limit_price,
         min_price=min_price,
-        max_price=max_price
+        max_price=max_price,
+        profit_target=profit_target,
+        volume_threshold=volume_threshold,
+        rotate_wallets=rotate_wallets
     )
     return f"<h2>{result}</h2><a href='/'>Back</a>"
 
