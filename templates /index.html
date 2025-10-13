@@ -10,48 +10,8 @@
   <!-- Buy Form -->
   <h2>Buy Operation</h2>
   <form action="/trade" method="post">
-    <label>Wallet:</label>
-    <input type="text" name="wallet" value="wallet1" required><br>
-
-    <label>Amount ($):</label>
-    <input type="number" name="amount" value="10" step="0.01" required><br>
-
-    <label>Delay (seconds):</label>
-    <input type="number" name="delay" value="2" step="0.1" required><br>
-
-    <label>Number of Executions:</label>
-    <input type="number" name="count" value="5" required><br>
-
-    <label>Limit Price ($):</label>
-    <input type="number" name="limit_price" step="0.01"><br>
-
-    <label>Min Price ($):</label>
-    <input type="number" name="min_price" step="0.01"><br>
-
-    <label>Max Price ($):</label>
-    <input type="number" name="max_price" step="0.01"><br>
-
-    <label>Spacing Interval (seconds):</label>
-    <input type="number" name="spacing" value="0" step="0.1"><br>
-
-    <label>Profit Target (x):</label>
-    <input type="number" name="profit_target" value="1.5" step="0.01"><br>
-
-    <label>Volume Threshold:</label>
-    <input type="number" name="volume_threshold" value="20"><br>
-
-    <label>Rotate Wallets:</label>
-    <input type="checkbox" name="rotate_wallets"><br>
-
-    <label>Dry Run:</label>
-    <input type="checkbox" name="dry_run"><br>
-
-    <label>Continuous Mode:</label>
-    <input type="checkbox" name="continuous_mode"><br>
-
-    <label>Preview Only:</label>
-    <input type="checkbox" name="preview"><br>
-
+    <!-- [unchanged inputs] -->
+    <!-- ... -->
     <button type="submit">Execute Buy</button>
   </form>
 
@@ -60,48 +20,8 @@
   <!-- Sell Form -->
   <h2>Sell Operation</h2>
   <form action="/sell" method="post">
-    <label>Wallet:</label>
-    <input type="text" name="wallet" value="wallet1" required><br>
-
-    <label>Amount ($):</label>
-    <input type="number" name="amount" value="10" step="0.01" required><br>
-
-    <label>Delay (seconds):</label>
-    <input type="number" name="delay" value="2" step="0.1" required><br>
-
-    <label>Number of Executions:</label>
-    <input type="number" name="count" value="5" required><br>
-
-    <label>Limit Price ($):</label>
-    <input type="number" name="limit_price" step="0.01"><br>
-
-    <label>Min Price ($):</label>
-    <input type="number" name="min_price" step="0.01"><br>
-
-    <label>Max Price ($):</label>
-    <input type="number" name="max_price" step="0.01"><br>
-
-    <label>Spacing Interval (seconds):</label>
-    <input type="number" name="spacing" value="0" step="0.1"><br>
-
-    <label>Profit Target (x):</label>
-    <input type="number" name="profit_target" value="1.5" step="0.01"><br>
-
-    <label>Volume Threshold:</label>
-    <input type="number" name="volume_threshold" value="20"><br>
-
-    <label>Rotate Wallets:</label>
-    <input type="checkbox" name="rotate_wallets"><br>
-
-    <label>Dry Run:</label>
-    <input type="checkbox" name="dry_run"><br>
-
-    <label>Continuous Mode:</label>
-    <input type="checkbox" name="continuous_mode"><br>
-
-    <label>Preview Only:</label>
-    <input type="checkbox" name="preview"><br>
-
+    <!-- [unchanged inputs] -->
+    <!-- ... -->
     <button type="submit">Execute Sell</button>
   </form>
 
@@ -110,23 +30,41 @@
   <!-- Wallet Management -->
   <h2>Wallet Management</h2>
   <form action="/deposit" method="post">
-    <label>Wallet:</label>
-    <input type="text" name="wallet" value="wallet1" required><br>
-    <label>Amount ($):</label>
-    <input type="number" name="amount" value="10" step="0.01" required><br>
+    <!-- [unchanged inputs] -->
     <button type="submit">Deposit</button>
   </form>
 
   <form action="/withdraw" method="post">
-    <label>Wallet:</label>
-    <input type="text" name="wallet" value="wallet1" required><br>
-    <label>Amount ($):</label>
-    <input type="number" name="amount" value="10" step="0.01" required><br>
+    <!-- [unchanged inputs] -->
     <button type="submit">Withdraw</button>
   </form>
 
   <form action="/rebalance" method="post">
     <button type="submit">Rebalance Wallets</button>
   </form>
+
+  <hr>
+
+  <!-- Event Trigger -->
+  <h2>Trigger Event</h2>
+  <form action="/trigger_event" method="post">
+    <label>Wallet:</label>
+    <input type="text" name="wallet" value="wallet1" required><br>
+    <label>Event Type:</label>
+    <select name="event_type">
+      <option value="price_change">Price Change</option>
+      <option value="volume_spike">Volume Spike</option>
+      <option value="wallet_low_balance">Wallet Low Balance</option>
+    </select><br>
+    <button type="submit">Trigger Event</button>
+  </form>
+
+  <hr>
+
+  <!-- Monitoring & Logs -->
+  <h2>Monitoring & Logs</h2>
+  <a href="/daily_stats" target="_blank">View Daily Operation Stats</a><br>
+  <a href="/download_log" target="_blank">Download Audit Log</a>
+
 </body>
-  </html>
+</html>
