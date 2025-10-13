@@ -20,6 +20,10 @@ wallet_entry_prices = {
 rotation_index = 0
 SOL_LOW_THRESHOLD = 5.0
 TOKEN_EXPOSURE_LIMIT = 1000
+DAILY_CAP = 100  # max operations per wallet per day
+
+# In-memory daily counter (reset manually or via scheduler)
+daily_operations = {}
 
 def log_audit(wallet, action, amount, price):
     entry = {
@@ -34,6 +38,15 @@ def log_audit(wallet, action, amount, price):
             f.write(json.dumps(entry) + "\n")
     except Exception as e:
         print(f"[LOG ERROR] {e}")
+
+def handle_event(event_type, wallet):
+    if event_type == "price_change":
+        print(f"[EVENT] Price change detected — reviewing strategy for {wallet}")
+    elif event_type == "volume_spike":
+        print(f"[EVENT] Volume spike — throttling buys for {wallet}")
+    elif event_type == "wallet_low_balance":
+        print(f"[EVENT] Low balance — pausing trades for {wallet}")
+    # Add more mappings as needed
 
 def execute_trade(wallet, amount, delay, count, dry_run=False, action="buy",
                   continuous=False, preview=False, spacing=0,
@@ -62,6 +75,12 @@ def execute_trade(wallet, amount, delay, count, dry_run=False, action="buy",
             wallet = all_wallets[rotation_index % len(all_wallets)]
             rotation_index += 1
 
+        # Rate limit check
+        ops_today = daily_operations.get(wallet, 0)
+        if ops_today >= DAILY_CAP:
+            print(f"[LIMIT] Daily cap reached for {wallet}")
+            break
+
         # Get wallet info
         wallet_info = None
         for group in groups.values():
@@ -78,22 +97,35 @@ def execute_trade(wallet, amount, delay, count, dry_run=False, action="buy",
         # Exposure Tracking
         if sol_balance < SOL_LOW_THRESHOLD:
             print(f"[WARNING] Low SOL balance for {wallet}: {sol_balance} SOL")
+            handle_event("wallet_low_balance", wallet)
         if token_balance > TOKEN_EXPOSURE_LIMIT:
             print(f"[WARNING] Token overexposure for {wallet}: {token_balance} tokens")
 
         current_price = get_current_price()
         current_volume = get_current_volume()
 
+        # Event triggers
+        if random.random() < 0.05:
+            handle_event("price_change", wallet)
+        if current_volume > volume_threshold * 2.5:
+            handle_event("volume_spike", wallet)
+
         # Profit Taking
         entry_price = wallet_entry_prices.get(wallet, 1.0)
-        if action == "sell" and current_price < entry_price * profit_target:
-            print(f"[SKIPPED] Profit target not reached for {wallet} (entry: ${entry_price:.2f}, current: ${current_price:.2f})")
-            time.sleep(delay)
-            continue
+        target_price = entry_price * profit_target
+        if action == "sell":
+            if current_price >= target_price:
+                partial_amount = amount * random.uniform(0.3, 0.7)
+                print(f"[PROFIT] Partial sell triggered for {wallet} at ${current_price:.2f}")
+                amount = partial_amount
+            else:
+                print(f"[SKIPPED] Profit target not reached for {wallet} (entry: ${entry_price:.2f}, current: ${current_price:.2f})")
+                time.sleep(delay)
+                continue
 
         # Volume Stabilization
         if action == "buy" and current_volume < volume_threshold:
-            print(f"[VOLUME STABILIZATION] Micro-buy triggered for {wallet} at volume {current_volume}")
+            print(f"[STABILIZATION] Micro-buy triggered for {wallet} at volume {current_volume}")
         elif action == "buy" and current_volume > volume_threshold * 2:
             print(f"[THROTTLED] Skipping buy due to high volume {current_volume}")
             time.sleep(delay)
@@ -108,13 +140,14 @@ def execute_trade(wallet, amount, delay, count, dry_run=False, action="buy",
         actual_delay = max(0, delay + jitter)
 
         if dry_run:
-            print(f"[DRY RUN] {action.upper()} #{executions+1} from {wallet} with ${amount} at price ${limit_price or current_price:.2f}")
+            print(f"[DRY RUN] {action.upper()} #{executions+1} from {wallet} with ${amount:.2f} at price ${limit_price or current_price:.2f}")
         else:
-            print(f"{action.upper()} #{executions+1} from {wallet} with ${amount} at price ${limit_price or current_price:.2f}")
+            print(f"{action.upper()} #{executions+1} from {wallet} with ${amount:.2f} at price ${limit_price or current_price:.2f}")
             log_audit(wallet, action, amount, limit_price or current_price)
             # TODO: Add actual execution logic via Web3 or Solana API
 
         executions += 1
+        daily_operations[wallet] = daily_operations.get(wallet, 0) + 1
         time.sleep(actual_delay + spacing)
 
     return f"Executed {executions} {action} operations from wallet '{wallet}'{' (dry-run)' if dry_run else ''}."
@@ -138,5 +171,6 @@ def rebalance_wallets():
             delta = target_per_wallet - current
             print(f"  Wallet '{wallet_name}': current {current:.2f}, target {target_per_wallet:.2f}, delta {delta:+.2f}")
             # TODO: Add actual transfer logic here
+            log_audit(wallet_name, "rebalance", delta, 0)
 
     return "Rebalance simulation completed."
