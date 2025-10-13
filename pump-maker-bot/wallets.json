@@ -1,4 +1,42 @@
 {
-  "wallet1": "0xABCDEF1234567890",
-  "wallet2": "0x1234567890ABCDEF"
+  "groups": {
+    "MM Group A": {
+      "buy_percentage": 60,
+      "sell_percentage": 50,
+      "wallets": {
+        "wallet1": {
+          "address": "0xABCDEF1234567890",
+          "sol_balance": 12.5,
+          "token_balance": 300
+        },
+        "wallet2": {
+          "address": "0x1234567890ABCDEF",
+          "sol_balance": 8.2,
+          "token_balance": 150
+        }
+      }
+    },
+    "Reserve": {
+      "buy_percentage": 30,
+      "sell_percentage": 40,
+      "wallets": {
+        "wallet3": {
+          "address": "0xFEDCBA0987654321",
+          "sol_balance": 20.0,
+          "token_balance": 500
+        }
+      }
+    },
+    "Treasury": {
+      "buy_percentage": 10,
+      "sell_percentage": 10,
+      "wallets": {
+        "wallet4": {
+          "address": "0x1122334455667788",
+          "sol_balance": 50.0,
+          "token_balance": 1000
+        }
+      }
+    }
+  }
 }
