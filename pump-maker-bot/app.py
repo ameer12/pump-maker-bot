@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request
-from engine import execute_trade, deposit_funds, withdraw_funds, rebalance_wallets
+from flask import Flask, render_template, request, send_file
+from engine import execute_trade, deposit_funds, withdraw_funds, rebalance_wallets, handle_event, daily_operations
+import os
 
 app = Flask(__name__)
 
@@ -97,6 +98,28 @@ def withdraw():
 def rebalance():
     result = rebalance_wallets()
     return f"<h2>{result}</h2><a href='/'>Back</a>"
+
+@app.route('/download_log')
+def download_log():
+    if os.path.exists("audit_log.json"):
+        return send_file("audit_log.json", as_attachment=True)
+    else:
+        return "<h2>No audit log found.</h2><a href='/'>Back</a>"
+
+@app.route('/trigger_event', methods=['POST'])
+def trigger_event():
+    wallet = request.form['wallet']
+    event_type = request.form['event_type']
+    handle_event(event_type, wallet)
+    return f"<h2>Event '{event_type}' triggered for wallet '{wallet}'.</h2><a href='/'>Back</a>"
+
+@app.route('/daily_stats')
+def daily_stats():
+    html = "<h2>Daily Operation Stats</h2><ul>"
+    for wallet, count in daily_operations.items():
+        html += f"<li>{wallet}: {count} operations today</li>"
+    html += "</ul><a href='/'>Back</a>"
+    return html
 
 if __name__ == '__main__':
     app.run(debug=True)
